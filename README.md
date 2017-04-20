@@ -64,6 +64,15 @@ temp F: 84 sg uncal: 1036
 temp C: 28.89 sg: 1.042 plato: 10.48
 ```
 
+### Cron
+
+Collecting data from tilt hydrometer and saving it in Firebase can be automated using `cron`.
+
+Eg. To run script for every five minutes edit `/cr` file and add following line"
+```
+*/5 * * * * sudo /usr/bin/python /home/pi/firebasesend.py
+```
+
 ## Acknowledgements
 
 Bluetooth scanning and parsing data from tilt is based on code from: https://github.com/jimmayhugh/TiltRPi
