@@ -44,9 +44,11 @@ sudo pip3 install pyrebase
    
    Where: 
    
-   `apiKey` and `projectId` can be found in Firebase project settings  
-   `databaseURL` can be found in `Database` section in Firebase console
-   `serviceAccountCredentials.json` is previously generated key in json format
+   `apiKey` and `projectId` can be found in Firebase project settings.
+   
+   `databaseURL` can be found in `Database` section in Firebase console.
+   
+   `serviceAccountCredentials.json` is previously generated key in json format.
 
 ## Running and automating
 
