@@ -41,5 +41,29 @@ sudo pip3 install pyrebase
      "serviceAccount": "path/to/serviceAccountCredentials.json"
    }
    ```
+   
+   Where: 
+   
+   `apiKey` and `projectId` can be found in Firebase project settings  
+   `databaseURL` can be found in `Database` section in Firebase console
+   `serviceAccountCredentials.json` is previously generated key in json format
 
-sudo python tiltblescan.py
+## Running and automating
+
+If evething was configured properly run:
+```bash
+sudo python3 tiltblescan.py
+```
+
+Output should be similar to:
+```bash
+temp correction: 0 sg correction: 0.006 batch: 1
+temp F: 84 sg uncal: 1036
+temp C: 28.89 sg: 1.042 plato: 10.48
+```
+
+## Acknowledgements
+
+Bluetooth scanning and parsing data from tilt is based on code from: https://github.com/jimmayhugh/TiltRPi
+
+Thanks to https://github.com/mjarco for porting ble scanner to python3
