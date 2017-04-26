@@ -6,7 +6,7 @@ Python software that is aimed to run on a Raspberry Pi to access Tilt Data and s
 1. Raspberry Pi with Bluetooth LE support - tested on _B3_ but _Zero W_ should be ok.
 2. [Tilt Hydrometer](https://tilthydrometer.com/products/brewometer).
 
-![Raspberry Pi and Tilt Hydrometer immersed in water](.git/img/tilt.jpg?raw=true "Raspberry Pi and Tilt Hydrometer immersed in water")
+![Raspberry Pi and Tilt Hydrometer immersed in water](https://raw.githubusercontent.com/kkocel/tilt-raspi-firebase/master/.github/img/tilt.jpg "Raspberry Pi and Tilt Hydrometer immersed in water")
 
 ## Installation
 
