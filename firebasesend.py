@@ -9,7 +9,6 @@ config = {
   "storageBucket": "projectId.appspot.com",
   "serviceAccount": "path/to/serviceAccountCredentials.json"
 }
-
 def send_data_for_tilt(current_tilt, temp_and_sg):
         temperature_correction = db.child("calibration/" + current_tilt).child("temperature").get().val()
 
@@ -24,12 +23,12 @@ def send_data_for_tilt(current_tilt, temp_and_sg):
 
         batch_no = db.child("batch/" + current_tilt).get().val()
         print("Data for tilt: {}".format(current_tilt))
-        print("{}: temp correction: {} sg correction: {} batch: {}".format(current_tilt, temperature_correction, sg_correction,batch_no))
-        print("temp F: {} sg uncal: {}".format(temp_and_sg[0],temp_and_sg[1]))
-        print("temp C: {} sg: {} plato: {}".format(temp, sg, plato))
+        print("Temp correction: {}, SG correction: {}, batch: {}".format(temperature_correction, sg_correction,batch_no))
+        print("Temp F: {}, SG uncal: {}".format(temp_and_sg[0],temp_and_sg[1]))
+        print("Temp C: {}, SG: {} plato: {}".format(temp, sg, plato))
 
         data = {"temp": temp, "plato": plato}
-        db.child("measurements").child(str(batch_no)).child(int(time.time())).set(data)
+        db.child("measurements").child(current_tilt + "/" + str(batch_no)).child(int(time.time())).set(data)
 
         
 db = pyrebase.initialize_app(config).database()
