@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tilt hydrometer measurements</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js">
+	</script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js">
+	</script>
+	<script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js">
+	</script>
+	<script>
+	       window.chartColors = {
+	       red: 'rgb(255, 99, 132)',
+	       orange: 'rgb(255, 159, 64)',
+	       yellow: 'rgb(255, 205, 86)',
+	       green: 'rgb(75, 192, 192)',
+	       blue: 'rgb(54, 162, 235)',
+	       purple: 'rgb(153, 102, 255)',
+	       grey: 'rgb(231,233,237)'
+	       };
+	   
+	     // Initialize Firebase
+	     var config = {
+	       apiKey: "apiKey",
+	       authDomain: "projectId.firebaseapp.com",
+	       databaseURL: "https://projectId.firebaseio.com",
+	       projectId: "projectId",
+	       storageBucket: "projectId.appspot.com",
+	       messagingSenderId: "senderId"
+	     };
+	     firebase.initializeApp(config);
+	</script>
+	<style>
+	   canvas {
+	       -moz-user-select: none;
+	       -webkit-user-select: none;
+	       -ms-user-select: none;
+	   }
+	</style>
+</head>
+<body>
+	Select tilt: <select id="selectTilt">
+	</select>
+	<div style="width:75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+	<script>
+	   // remember to authorize user here in order to access database or set read permission to public in Firebase console
+	   var database = firebase.database();
+	   select = $('#selectTilt')
+	   firebase.database().ref('/aliases/').once('value').then(function(snapshot) {
+	   	snapshot.forEach(function(child) {
+	   		var opt = document.createElement('option');
+	   		opt.value = child.val();
+	   		opt.innerHTML = (child.key + ": " + child.val());
+	   		select.append(opt);
+	   	});
+	   	getBatchNumber();
+	   });
+	   select.on('change', function() {
+	   	getBatchNumber();
+	   })
+
+	   function getBatchNumber() {
+	   	var alias = $("#selectTilt").val();
+	   	firebase.database().ref('/batch/' + alias).once('value').then(function(snapshot) {
+	   		getBatchData(alias, snapshot.val());
+	   	});
+	   }
+
+	   function getBatchData(alias, batchNumber) {
+	   	var dateLabels = [];
+	   	var platoDegrees = [];
+	   	var temperatures = [];
+	   	firebase.database().ref('/measurements/' + alias + '/' + batchNumber).once('value').then(function(snapshot) {
+	   		snapshot.forEach(function(child) {
+	   			dateLabels.push(new Date(child.key * 1000));
+	   			platoDegrees.push(child.val().plato);
+	   			temperatures.push(child.val().temp);
+	   		});
+	   		drawChart(dateLabels, platoDegrees, temperatures, alias, batchNumber);
+	   	});
+	   }
+
+	   function drawChart(dateLabels, platoDegrees, temperatures, alias, batchNumber) {
+	   	var lineChartData = {
+	   		labels: dateLabels,
+	   		datasets: [{
+	   			label: "Plato",
+	   			borderColor: window.chartColors.red,
+	   			backgroundColor: window.chartColors.red,
+	   			fill: false,
+	   			data: platoDegrees,
+	   			yAxisID: "y-axis-1",
+	   		}, {
+	   			label: "Temperature",
+	   			borderColor: window.chartColors.blue,
+	   			backgroundColor: window.chartColors.blue,
+	   			fill: false,
+	   			data: temperatures,
+	   			yAxisID: "y-axis-2"
+	   		}]
+	   	};
+	   	var ctx = document.getElementById("canvas").getContext("2d");
+	   	window.myLine = Chart.Line(ctx, {
+	   		data: lineChartData,
+	   		options: {
+	   			responsive: true,
+	   			hoverMode: 'index',
+	   			stacked: false,
+	   			title: {
+	   				display: true,
+	   				text: 'Tilt hydrometer data. Hydrometer: '+ alias +' Batch: ' + batchNumber
+	   			},
+	   			scales: {
+	   				xAxes: [{
+	   					type: "time",
+	   					time: {
+	   						format: 'MM/DD/YYYY HH:mm',
+	   						tooltipFormat: 'll HH:mm'
+	   					},
+	   					scaleLabel: {
+	   						display: true,
+	   						labelString: 'Date'
+	   					}
+	   				}, ],
+	   				yAxes: [{
+	   					type: "linear",
+	   					display: true,
+	   					position: "left",
+	   					id: "y-axis-1",
+	   				}, {
+	   					type: "linear",
+	   					display: true,
+	   					position: "right",
+	   					id: "y-axis-2",
+	   					gridLines: {
+	   						drawOnChartArea: false,
+	   					},
+	   				}],
+	   			}
+	   		}
+	   	});
+	   }
+	</script>
+</body>
+</html>
